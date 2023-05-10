@@ -152,7 +152,7 @@ app.post("/weather", async (request, response) => {
                 sunset: weatherData.sunset
             };
             try {
-                client.connect();
+                await client.connect();
                 /* Inserting one applicant */
                 let weatherInCity = { city: city, weatherData: weatherData };
                 client.db(databaseAndCollection.db).collection(databaseAndCollection.collection).insertOne(weatherInCity);
