@@ -1,5 +1,5 @@
 const path = require("path");
-const request = require('request');
+const requester = require('request');
 const express = require("express"); /* Accessing express module */
 const app = express(); /* app is a request handler function */
 const bodyParser = require("body-parser"); /* To handle post parameters */
@@ -11,7 +11,7 @@ const password = process.env.MONGO_DB_PASSWORD;
 const databaseAndCollection = { db: process.env.MONGO_DB_NAME, collection: process.env.MONGO_COLLECTION };
 const uri = `mongodb+srv://${userName}:${password}@cluster0.pnvigqd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-const $ = require('jquery');
+/*const $ = require('jquery');*/
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -52,33 +52,52 @@ app.get("/", (request, response) => {
 });
 
 app.get("/weather", (request, response) => {
-    response.render("weatherForm", {portNumber:portNumber})
+    response.render("weatherForm", { portNumber: portNumber })
 });
 
 app.get("/history", (request, response) => {
-    response.render("history", {portNumber:portNumber})
+    response.render("history", { portNumber: portNumber })
 });
 
 
 //  e/9k+BzpkolTusi8jdQU4g==cVSRjIhblPEMRkKb
-app.post("/weatherResults", async (request, response) => {  
-    let weatherData = "gotta figure out API";
+app.post("/weatherResults", async (request, response) => {
+    let weatherData;
+    const { city } = request.body;
 
-    //get weather data
+    //ignore the info thing
+    const info = {
+        city: city,
+        weatherData: weatherData
+    }
+    // getting data from API
+    requester.get({
+        url: 'https://api.api-ninjas.com/v1/weather?city=' + city,
+        headers: {
+            'X-Api-Key': 'e/9k+BzpkolTusi8jdQU4g==cVSRjIhblPEMRkKb'
+        },
+    }, async function (error, response, body) {
+        if (error)
+            return console.error('Request failed:', error);
+        else if (response.statusCode != 200)
+            return console.error('Error:', response.statusCode, body.toString('utf8'));
+        else
+            console.log(body);
+        weatherData = JSON.parse(body);
+        // weatherData Correct here
+        console.log(weatherData)
+        console.log(body.temp)
+        console.log(weatherData.cloud_pct)
+    });
 
 
     // add to database
-    const { city } = request.body;
-    const info = {
-       city: city,
-       weatherData: weatherData
-    }
-
+    console.log(weatherData) //weatherData undefined here WHYYYY
     try {
         client.connect();
 
         /* Inserting one applicant */
-        let weatherInCity = { city: city, weatherData: weatherData};
+        let weatherInCity = { city: city, weatherData: weatherData };
         client.db(databaseAndCollection.db).collection(databaseAndCollection.collection).insertOne(weatherInCity);
 
     } catch (e) {
@@ -86,9 +105,9 @@ app.post("/weatherResults", async (request, response) => {
     }
 
     //render new page
-  
+
     const variables = {
-        city:city,
+        city: city,
         cloud_pct: weatherData.cloud_pct,
         temp: weatherData.temp,
         feels_like: weatherData.feels_like,
@@ -100,6 +119,6 @@ app.post("/weatherResults", async (request, response) => {
         sunrise: weatherData.sunrise,
         sunset: weatherData.sunset
     };
-      /* Generating the HTML using displayItems template */
-      response.render("displayWeather", variables);
-  });
+    /* Generating the HTML using displayItems template */
+    response.render("displayWeather", variables);
+});
