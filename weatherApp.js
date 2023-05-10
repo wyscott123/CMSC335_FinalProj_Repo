@@ -101,5 +101,5 @@ app.post("/weatherResults", async (request, response) => {
         sunset: weatherData.sunset
     };
       /* Generating the HTML using displayItems template */
-      response.render("displayWeather");
+      response.render("displayWeather", variables);
   });
