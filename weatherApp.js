@@ -44,9 +44,6 @@ app.set("views", path.resolve(__dirname, "templates"));
 /* view/templating engine */
 app.set("view engine", "ejs");
 
-
-
-
 /* ALL THE ROUTES BELOW */
 
 app.get("/", (request, response) => {
@@ -59,33 +56,33 @@ app.get("/weather", (request, response) => {
 });
 
 app.get("/history", (request, response) => {
-    const variables = {
-        portNumber: portNumber
-    };
     response.render("history", {portNumber:portNumber})
 });
 
 
 //  e/9k+BzpkolTusi8jdQU4g==cVSRjIhblPEMRkKb
 app.post("/weatherResults", async (request, response) => {  
-    const city = request.body.city;
-    let weatherData;
+    let weatherData = "gotta figure out API";
 
     //get weather data
 
 
     // add to database
-    const uri = `mongodb+srv://${userName}:${password}@cluster0.0fzphbg.mongodb.net/?retryWrites=true&w=majority`;
-    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+    const { city } = request.body;
+    const info = {
+       city: city,
+       weatherData: weatherData
+    }
 
     try {
-        await client.connect();
-        await insertWeather(client, databaseAndCollection, weatherData);
+        client.connect();
+
+        /* Inserting one applicant */
+        let weatherInCity = { city: city, weatherData: weatherData};
+        client.db(databaseAndCollection.db).collection(databaseAndCollection.collection).insertOne(weatherInCity);
 
     } catch (e) {
         console.error(e);
-    } finally {
-        await client.close();
     }
 
     //render new page
@@ -106,9 +103,3 @@ app.post("/weatherResults", async (request, response) => {
       /* Generating the HTML using displayItems template */
       response.render("displayWeather", variables);
   });
-
-
-
-async function insertWeather(client, databaseAndCollection, weatherData) {
-    const result = await client.db(databaseAndCollection.db).collection(databaseAndCollection.collection).insertOne(weatherData);
-}
