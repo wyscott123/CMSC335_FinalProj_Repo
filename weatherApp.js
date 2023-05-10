@@ -62,63 +62,48 @@ app.get("/history", (request, response) => {
 
 //  e/9k+BzpkolTusi8jdQU4g==cVSRjIhblPEMRkKb
 app.post("/weatherResults", async (request, response) => {
-    let weatherData;
     const { city } = request.body;
 
-    //ignore the info thing
-    const info = {
-        city: city,
-        weatherData: weatherData
-    }
-    // getting data from API
-    requester.get({
+    requester({
         url: 'https://api.api-ninjas.com/v1/weather?city=' + city,
         headers: {
             'X-Api-Key': 'e/9k+BzpkolTusi8jdQU4g==cVSRjIhblPEMRkKb'
         },
-    }, async function (error, response, body) {
+    }, async function (error, apiResponse, body) {
         if (error)
             return console.error('Request failed:', error);
-        else if (response.statusCode != 200)
-            return console.error('Error:', response.statusCode, body.toString('utf8'));
-        else
-            console.log(body);
-        weatherData = JSON.parse(body);
-        // weatherData Correct here
-        console.log(weatherData)
-        console.log(body.temp)
-        console.log(weatherData.cloud_pct)
+        else if (apiResponse.statusCode != 200)
+            return console.error('Error:', apiResponse.statusCode, body.toString('utf8'));
+        else {
+            const weatherData = JSON.parse(body);
+            // weatherData Correct here
+            //console.log(weatherData);
+            //console.log(weatherData.cloud_pct);
+            const variables = {
+                city: city,
+                cloud_pct: weatherData.cloud_pct,
+                temp: weatherData.temp,
+                feels_like: weatherData.feels_like,
+                humidity: weatherData.humidity,
+                min_temp: weatherData.min_temp,
+                max_temp: weatherData.max_temp,
+                wind_speed: weatherData.wind_speed,
+                wind_degrees: weatherData.wind_degrees,
+                sunrise: weatherData.sunrise,
+                sunset: weatherData.sunset
+            };
+            try {
+                client.connect();
+                /* Inserting one applicant */
+                let weatherInCity = { city: city, weatherData: weatherData };
+                client.db(databaseAndCollection.db).collection(databaseAndCollection.collection).insertOne(weatherInCity);
+        
+            } catch (e) {
+                console.error(e);
+            }
+        
+            response.render("displayWeather", variables);
+        }
     });
-
-
-    // add to database
-    console.log(weatherData) //weatherData undefined here WHYYYY
-    try {
-        client.connect();
-
-        /* Inserting one applicant */
-        let weatherInCity = { city: city, weatherData: weatherData };
-        client.db(databaseAndCollection.db).collection(databaseAndCollection.collection).insertOne(weatherInCity);
-
-    } catch (e) {
-        console.error(e);
-    }
-
-    //render new page
-
-    const variables = {
-        city: city,
-        cloud_pct: weatherData.cloud_pct,
-        temp: weatherData.temp,
-        feels_like: weatherData.feels_like,
-        humidity: weatherData.humidity,
-        min_temp: weatherData.min_temp,
-        max_temp: weatherData.max_temp,
-        wind_speed: weatherData.wind_speed,
-        wind_degrees: weatherData.wind_degrees,
-        sunrise: weatherData.sunrise,
-        sunset: weatherData.sunset
-    };
-    /* Generating the HTML using displayItems template */
-    response.render("displayWeather", variables);
 });
+
