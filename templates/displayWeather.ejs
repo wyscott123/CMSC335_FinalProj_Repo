@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather in {{city}}</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">Home</a>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Weather in <%- city %></h1>
+        <table>
+            <tr>
+                <th>Cloud Coverage</th>
+                <td><%- cloud_pct %></td>
+            </tr>
+            <tr>
+                <th>Temperature</th>
+                <td><%- temp %>&deg;C</td>
+            </tr>
+            <tr>
+                <th>Feels Like</th>
+                <td><%- feels_like %>&deg;C</td>
+            </tr>
+            <tr>
+                <th>Humidity</th>
+                <td><%- humidity %></td>
+            </tr>
+            <tr>
+                <th>Min Temperature</th>
+                <td><%- min_temp %>&deg;C</td>
+            </tr>
+            <tr>
+                <th>Max Temperature</th>
+                <td><%- max_temp %>&deg;C</td>
+            </tr>
+            <tr>
+                <th>Wind Speed</th>
+                <td><%- wind_speed %> m/s</td>
+            </tr>
+            <tr>
+                <th>Wind Direction</th>
+                <td><%- wind_degrees %>&deg;</td>
+            </tr>
+            <tr>
+                <th>Sunrise</th>
+                <td><%- sunrise %></td>
+            </tr>
+            <tr>
+                <th>Sunset</th>
+                <td><%- sunset %></td>
+            </tr>
+        </table>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 MyWeatherApp</p>
+    </footer>
+</body>
+</html>

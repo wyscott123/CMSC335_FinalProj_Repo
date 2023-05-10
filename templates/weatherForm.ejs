@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="utf-8" />
-	<title>Welcome to our weather channel</title>
+	<title>View Weather</title>
 	<style>
 		body {
 			background-color: #f9fafc;
@@ -33,17 +33,47 @@
 			border-radius: 10px;
 		}
 
-		.btn-container {
+		.form-container {
 			display: flex;
-			flex-direction: row;
+			flex-direction: column;
 			align-items: center;
-			justify-content: space-around;
+			justify-content: center;
 			width: 100%;
 			margin-top: 30px;
 		}
 
+		.form-label {
+			display: inline-block;
+			margin: 15px 0;
+			font-size: 18px;
+			font-weight: bold;
+			color: #333;
+		}
+
+		.form-input {
+			display: inline-block;
+			padding: 10px;
+			font-size: 18px;
+			color: #333;
+			border: none;
+			border-radius: 5px;
+			background-color: #f2f2f2;
+			box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+			transition: all 0.2s ease-in-out;
+			width: 80%;
+			max-width: 400px;
+			text-align: center;
+		}
+
+		.form-input:focus {
+			outline: none;
+			background-color: #fff;
+			box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+		}
+
 		.btn {
 			display: inline-block;
+			margin-top: 30px;
 			padding: 15px 30px;
 			font-size: 18px;
 			font-weight: bold;
@@ -74,13 +104,12 @@
 
 <body>
 	<div class="container">
-		<h1>Welcome to our weather channel!</h1>
-		<div class="btn-container">
-			<a href="/weather" class="btn">View weather</a>
-			<a href="/history" class="btn">View history</a>
-		</div>
-		<p style="margin-top: 30px;">Don't know your location or want to find a different city to look at?</p>
-		<p>Check out our <a href="https://www.google.com/maps" target="_blank" class="link">map</a> to find out!</p>
+		<h1>View Weather</h1>
+		<form action='http://localhost:<%- portNumber %>/weatherResults' method="post" class= "form-container">
+			<label class="form-label" for="city">City Name:</label>
+			<input class="form-input" type="text" id="city" name="city" placeholder="Enter a city name">
+			<button class="btn" type="submit">View Weather</button>
+		</form>
 	</div>
 </body>
 
