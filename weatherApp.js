@@ -172,7 +172,8 @@ app.post("/weather", async (request, response) => {
 
 function generateHistoryHTML(result) {
     let htmlString = '';
-  
+    result = result.reverse() // for recents on top
+
     if (result.length === 0) {
       htmlString += '<p>No weather data available.</p>';
     } else {
