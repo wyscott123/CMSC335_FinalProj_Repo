@@ -56,39 +56,6 @@ app.get("/weather", (request, response) => {
 });
 
 
-
-// app.get("/history", async (request, response) => {
-//     let result;
-//     let numResults;
-  
-//     try {
-//       await client.connect();
-  
-//       const filter = {};
-//       const cursor = client
-//         .db(databaseAndCollection.db)
-//         .collection(databaseAndCollection.collection)
-//         .find(filter);
-  
-//       result = await cursor.toArray();
-//       numResults = result.length;
-//       console.log(result);
-//     } catch (error) {
-//       console.error(error);
-//       response.status(500).send("Internal Server Error");
-//       return;
-//     } finally {
-//       await client.close();
-//     }
-  
-//     const variables = {
-//       portNumber: portNumber,
-//       numResults: numResults,
-//       result: result,
-//     };
-  
-//     response.render("history", variables);
-//   });
   
 app.get("/history", async (request, response) => {
     try {
