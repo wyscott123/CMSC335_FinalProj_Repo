@@ -61,7 +61,7 @@ app.get("/history", (request, response) => {
 
 
 //  e/9k+BzpkolTusi8jdQU4g==cVSRjIhblPEMRkKb
-app.post("/weatherResults", async (request, response) => {
+app.post("/weather", async (request, response) => {
     const { city } = request.body;
 
     requester({
