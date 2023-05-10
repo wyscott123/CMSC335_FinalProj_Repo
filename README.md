@@ -7,5 +7,6 @@ Wyatt Scott (UID:117042641), Shivam Amin (117100655), Tim Cao
 Our app uses a weather api to display the weather of the input location. It also stores a history of the locations put in. (SUBJECT TO CHANGE)
 
 ## API Links
+https://api-ninjas.com/api/weather
 
 ## Youtube Demo
