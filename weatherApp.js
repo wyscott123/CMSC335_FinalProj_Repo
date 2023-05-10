@@ -159,8 +159,6 @@ app.post("/weather", async (request, response) => {
         
             } catch (e) {
                 console.error(e);
-            } finally {
-              await client.close();
             }
         
             response.render("displayWeather", variables);
