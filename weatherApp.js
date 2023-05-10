@@ -55,12 +55,71 @@ app.get("/weather", (request, response) => {
     response.render("weatherForm", { portNumber: portNumber })
 });
 
-app.get("/history", (request, response) => {
-    response.render("history", { portNumber: portNumber })
-});
 
 
-//  e/9k+BzpkolTusi8jdQU4g==cVSRjIhblPEMRkKb
+// app.get("/history", async (request, response) => {
+//     let result;
+//     let numResults;
+  
+//     try {
+//       await client.connect();
+  
+//       const filter = {};
+//       const cursor = client
+//         .db(databaseAndCollection.db)
+//         .collection(databaseAndCollection.collection)
+//         .find(filter);
+  
+//       result = await cursor.toArray();
+//       numResults = result.length;
+//       console.log(result);
+//     } catch (error) {
+//       console.error(error);
+//       response.status(500).send("Internal Server Error");
+//       return;
+//     } finally {
+//       await client.close();
+//     }
+  
+//     const variables = {
+//       portNumber: portNumber,
+//       numResults: numResults,
+//       result: result,
+//     };
+  
+//     response.render("history", variables);
+//   });
+  
+app.get("/history", async (request, response) => {
+    try {
+      await client.connect();
+  
+      const filter = {};
+      const cursor = client
+        .db(databaseAndCollection.db)
+        .collection(databaseAndCollection.collection)
+        .find(filter);
+  
+      const result = await cursor.toArray();
+      const numResults = result.length;
+  
+      const htmlString = generateHistoryHTML(result);
+      const variables = {
+        portNumber: portNumber,
+        htmlString: htmlString,
+      };
+  
+      response.render("history", variables);
+    } catch (error) {
+      console.error(error);
+      response.status(500).send("Internal Server Error");
+    } finally {
+      await client.close();
+    }
+  });
+  
+
+
 app.post("/weather", async (request, response) => {
     const { city } = request.body;
 
@@ -107,3 +166,67 @@ app.post("/weather", async (request, response) => {
     });
 });
 
+
+
+function generateHistoryHTML(result) {
+    let htmlString = '';
+  
+    if (result.length === 0) {
+      htmlString += '<p>No weather data available.</p>';
+    } else {
+      for (let i = 0; i < result.length; i++) {
+        const object = result[i]
+        const entry = result[i].weatherData;
+  
+        htmlString += `
+          <h2>City: ${object.city}</h2>
+          <table>
+            <tr>
+              <th>Cloud Coverage</th>
+              <td>${entry.cloud_pct}</td>
+            </tr>
+            <tr>
+              <th>Temperature</th>
+              <td>${entry.temp}&deg;C</td>
+            </tr>
+            <tr>
+              <th>Feels Like</th>
+              <td>${entry.feels_like}&deg;C</td>
+            </tr>
+            <tr>
+              <th>Humidity</th>
+              <td>${entry.humidity}%</td>
+            </tr>
+            <tr>
+              <th>Min Temperature</th>
+              <td>${entry.min_temp}&deg;C</td>
+            </tr>
+            <tr>
+              <th>Max Temperature</th>
+              <td>${entry.max_temp}&deg;C</td>
+            </tr>
+            <tr>
+              <th>Wind Speed</th>
+              <td>${entry.wind_speed} m/s</td>
+            </tr>
+            <tr>
+              <th>Wind Direction</th>
+              <td>${entry.wind_degrees}&deg;</td>
+            </tr>
+            <tr>
+              <th>Sunrise</th>
+              <td>${entry.sunrise}</td>
+            </tr>
+            <tr>
+              <th>Sunset</th>
+              <td>${entry.sunset}</td>
+            </tr>
+          </table>
+        `;
+      }
+    }
+  
+    return htmlString;
+  }
+  
+  
