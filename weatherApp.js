@@ -1,3 +1,4 @@
+
 const path = require("path");
 const requester = require('request');
 const express = require("express"); /* Accessing express module */
@@ -196,3 +197,29 @@ function generateHistoryHTML(result) {
   }
   
   
+
+
+//   app.post("/deleteConfirm", async (request, response) => {
+//     let deletedNum;
+//     try {
+//       await client.connect();
+//       const result = await client.db(databaseAndCollection.db).collection(databaseAndCollection.collection).deleteMany({});
+//       deletedNum = result.deletedCount
+//     } catch (e) {
+//         console.error(e);
+//     }
+
+//     response.render("displayDeleteConfirm", { deleted:deletedNum }); 
+// });
+
+app.post("/deleteConfirm", async (request, response) => {
+  let result
+  try {
+    await client.connect();
+    result = client.db(databaseAndCollection.db).collection(databaseAndCollection.collection).deleteMany({})
+  } catch (e) {
+      console.error(e);
+  }
+  response.render("displayDeleteConfirm"); 
+});
+

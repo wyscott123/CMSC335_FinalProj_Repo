@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+    <script src="weatherApp.js"></script>
 <head>
     <meta charset="utf-8">
     <title>Weather History</title>
@@ -50,7 +51,8 @@
             margin-top: 20px;
         }
 
-        th, td {
+        th,
+        td {
             padding: 10px;
             text-align: left;
         }
@@ -69,8 +71,34 @@
             padding: 10px;
             text-align: center;
         }
+
+        #delete-button {
+            background-color: #ff4f4f;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #delete-button:hover {
+            background-color: #ff1f1f;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .large-button {
+            font-size: 24px;
+            padding: 10px 20px;
+        }
     </style>
 </head>
+
 <body>
     <header>
         <nav>
@@ -81,10 +109,18 @@
     <main>
         <h1>Weather History</h1>
         <%- htmlString %>
+        <div class="button-container">
+            <form action="/deleteConfirm" method="POST">
+                <button id="delete-button" class="large-button" type="submit">Delete All Entries</button>
+            </form>
+        </div>
     </main>
+    
+    
 
     <footer>
         <p>&copy; 2023 MyWeatherApp</p>
     </footer>
 </body>
+
 </html>
