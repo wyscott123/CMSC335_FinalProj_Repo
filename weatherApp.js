@@ -101,6 +101,11 @@ app.post("/weather", async (request, response) => {
             return console.error('Error:', apiResponse.statusCode, body.toString('utf8'));
         else {
             const weatherData = JSON.parse(body);
+            //convert vals
+            weatherData.temp = toFaren(weatherData.temp)
+            weatherData.min_temp = toFaren(weatherData.min_temp)
+            weatherData.max_temp = toFaren(weatherData.max_temp)
+            weatherData.feels_like = toFaren(weatherData.feels_like)
             // weatherData Correct here
             //console.log(weatherData);
             //console.log(weatherData.cloud_pct);
@@ -119,6 +124,7 @@ app.post("/weather", async (request, response) => {
             };
             try {
                 await client.connect();
+                
                 /* Inserting one applicant */
                 let weatherInCity = { city: city, weatherData: weatherData };
                 client.db(databaseAndCollection.db).collection(databaseAndCollection.collection).insertOne(weatherInCity);
@@ -150,15 +156,15 @@ function generateHistoryHTML(result) {
           <table>
             <tr>
               <th>Cloud Coverage</th>
-              <td>${entry.cloud_pct}</td>
+              <td>${entry.cloud_pct}%</td>
             </tr>
             <tr>
               <th>Temperature</th>
-              <td>${entry.temp}&deg;C</td>
+              <td>${entry.temp}&deg;F</td>
             </tr>
             <tr>
               <th>Feels Like</th>
-              <td>${entry.feels_like}&deg;C</td>
+              <td>${entry.feels_like}&deg;F</td>
             </tr>
             <tr>
               <th>Humidity</th>
@@ -166,11 +172,11 @@ function generateHistoryHTML(result) {
             </tr>
             <tr>
               <th>Min Temperature</th>
-              <td>${entry.min_temp}&deg;C</td>
+              <td>${entry.min_temp}&deg;F</td>
             </tr>
             <tr>
               <th>Max Temperature</th>
-              <td>${entry.max_temp}&deg;C</td>
+              <td>${entry.max_temp}&deg;F</td>
             </tr>
             <tr>
               <th>Wind Speed</th>
@@ -198,20 +204,6 @@ function generateHistoryHTML(result) {
   
   
 
-
-//   app.post("/deleteConfirm", async (request, response) => {
-//     let deletedNum;
-//     try {
-//       await client.connect();
-//       const result = await client.db(databaseAndCollection.db).collection(databaseAndCollection.collection).deleteMany({});
-//       deletedNum = result.deletedCount
-//     } catch (e) {
-//         console.error(e);
-//     }
-
-//     response.render("displayDeleteConfirm", { deleted:deletedNum }); 
-// });
-
 app.post("/deleteConfirm", async (request, response) => {
   let result
   try {
@@ -223,3 +215,6 @@ app.post("/deleteConfirm", async (request, response) => {
   response.render("displayDeleteConfirm"); 
 });
 
+function toFaren(celsius) {
+  return celsius * 9 / 5 + 32;
+}
