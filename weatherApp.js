@@ -106,6 +106,8 @@ app.post("/weather", async (request, response) => {
             weatherData.min_temp = toFaren(weatherData.min_temp)
             weatherData.max_temp = toFaren(weatherData.max_temp)
             weatherData.feels_like = toFaren(weatherData.feels_like)
+            var mySunrise = new Date(weatherData.sunrise*1000);
+            var mySunset = new Date(weatherData.sunset*1000);
             // weatherData Correct here
             //console.log(weatherData);
             //console.log(weatherData.cloud_pct);
@@ -119,8 +121,8 @@ app.post("/weather", async (request, response) => {
                 max_temp: weatherData.max_temp,
                 wind_speed: weatherData.wind_speed,
                 wind_degrees: weatherData.wind_degrees,
-                sunrise: weatherData.sunrise,
-                sunset: weatherData.sunset
+                sunrise: mySunrise.toGMTString(),
+                sunset: mySunset.toGMTString()
             };
             try {
                 await client.connect();
@@ -150,6 +152,8 @@ function generateHistoryHTML(result) {
       for (let i = 0; i < result.length; i++) {
         const object = result[i]
         const entry = result[i].weatherData;
+        var mySunrise = new Date(result[i].weatherData.sunrise*1000);
+        var mySunset = new Date(result[i].weatherData.sunset*1000);
   
         htmlString += `
           <h2>City: ${object.city}</h2>
@@ -188,11 +192,11 @@ function generateHistoryHTML(result) {
             </tr>
             <tr>
               <th>Sunrise</th>
-              <td>${entry.sunrise}</td>
+              <td>${mySunrise.toGMTString()}</td>
             </tr>
             <tr>
               <th>Sunset</th>
-              <td>${entry.sunset}</td>
+              <td>${mySunset.toGMTString()}</td>
             </tr>
           </table>
         `;
